@@ -108,7 +108,8 @@ void Menu::DrawPlayers()
 {
     for (int i = 0; i < playerPositions.size(); ++i)
     {   
-        Rectangle sourceRec = {0.0f, 0.0f, (float)playerTextures[i].width / 4, (float)playerTextures[i].height};
+        int numFrames = 5;
+        Rectangle sourceRec = {0.0f, 0.0f, (float)playerTextures[i].width / numFrames, (float)playerTextures[i].height};
         Rectangle destRec = {playerPositions[i].x, playerPositions[i].y, playerSize, playerSize};
         DrawTexturePro(playerTextures[i], sourceRec, destRec, {0, 0}, 0.0f, WHITE);
     }

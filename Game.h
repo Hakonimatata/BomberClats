@@ -8,6 +8,7 @@
 #include "Utilities.h"
 #include "GridMap.h"
 #include "Grenade.h"
+#include <math.h>
 
 using namespace std;
 
@@ -43,7 +44,6 @@ class Game : public GridMap
         vector<Texture2D> playerTextures;
 
         // Background
-        Rectangle backgroundSpriteRect;   // For background if needed
         Texture2D backgroundTexture;      // Background texture
 
         // Grenades

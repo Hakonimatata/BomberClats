@@ -11,6 +11,7 @@
 	"files.associations": {
 		"ostream": "cpp",
 		"*.m": "cpp",
-		"new": "cpp"
+		"new": "cpp",
+		"cmath": "cpp"
 	}
 }

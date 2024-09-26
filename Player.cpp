@@ -1,7 +1,7 @@
 #include "Player.h"
 
-Player::Player(float posX, float posY) : 
-    posX(posX), posY(posY), hitbox{posX, posY, 100, 100}
+Player::Player(float posX, float posY, int playerID) : 
+    posX(posX), posY(posY), hitbox{posX, posY, 100, 100}, playerID(playerID)
 {}
 
 Player::~Player()
@@ -16,6 +16,8 @@ void Player::init(PlayerControls controls)
 
 void Player::HandleInput(PlayerCommand& playerCommand) 
 {
+    // If dead, do nothing
+    if(isDead) return;
 
     // Walk left
     if (IsKeyDown(controls.moveLeft)) 
@@ -135,6 +137,8 @@ void Player::Update()
     // Update hitbox position
     hitbox = Hitbox(posX, posY, width, height);
 
+    if (health <= 0 && !isDead) { die(); }
+
     // Update pos from velovity
     posX += velX;
     posY += velY;
@@ -172,10 +176,15 @@ Rectangle Player::getSourceRect(Texture2D& texture)
         }
     }
 
-    int numFrames = 4;
+    int numFrames = 5;
     float currentFrameStartX = currentFrame * (float)texture.width / numFrames;
     float frameWidth = (float)texture.width / numFrames;
 
+    if(isDead) 
+    {
+        int dethFrame = 4;
+        return { (float)dethFrame * (float)texture.width / numFrames, 0.0f, frameWidth, (float)texture.height };
+    }
 
     Rectangle sourceRec = { currentFrameStartX, 0.0f, frameWidth, (float)texture.height };
     // Sjekk hvilken retning spilleren vender
@@ -184,4 +193,17 @@ Rectangle Player::getSourceRect(Texture2D& texture)
         sourceRec.width *= -1; // Gjør bredden negativ for å flippe
     }
     return sourceRec;
+}
+
+void Player::DrawHealthBar(float posX, float posY, float size, Color color)
+{
+    float barWhickness = 5.0f;
+    DrawRectangle(posX, posY, size * health / 100, barWhickness, color);
+}
+
+void Player::die()
+{
+    isDead = true;
+    posY--;
+    velY = -5.0f;
 }

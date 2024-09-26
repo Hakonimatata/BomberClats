@@ -1,8 +1,8 @@
 #include "Grenade.h"
 
 
-Grenade::Grenade(float posX, float posY, float velX, float velY) : 
-    posX(posX), posY(posY), velX(velX), velY(velY), hitbox(posX, posY, size, size)
+Grenade::Grenade(float posX, float posY, float velX, float velY, int throwerID) : 
+    posX(posX), posY(posY), velX(velX), velY(velY), hitbox(posX, posY, size, size), throwerID(throwerID)
 {
     
 }
@@ -17,8 +17,17 @@ Grenade::~Grenade()
 
 void Grenade::Draw(Texture2D& texture)    
 {
-    DrawTexturePro(texture, { 0.0f, 0.0f, (float)texture.width, (float)texture.height }, 
-        { posX, posY, size, size }, { 0, 0 }, 0.0f, WHITE);
+    Rectangle sourceRec = getSourceRect(texture);
+    Rectangle destRec = { posX, posY, size, size };
+    
+    if(exploded)
+    {
+        // increase size of destRec
+        float multiplier = 10.0f;
+        destRec = { posX - (size * multiplier / 2.0f), posY - (size * multiplier / 2.0f), size * multiplier, size * multiplier };
+    }
+
+    DrawTexturePro(texture, sourceRec, destRec, { 0, 0 }, 0.0f, WHITE);
 }
 
 
@@ -42,15 +51,41 @@ void Grenade::Update(float deltaTime)
 
 void Grenade::explode()
 {
-    // Stop moving
     velX = 0;
     velY = 0;
     exploded = true;
-
-    // change to explode frame for split secound and then set as dead
-
-    isDead = true;
 }
+
+Rectangle Grenade::getSourceRect(Texture2D& texture)
+{   
+    if(exploded) { framesCounter++; }
+
+    int frameUpdateRate = 3;           // Hvor raskt animasjonen oppdateres
+    int animationEndFrame = 4;         // Siste rammenummer for animasjonen (ikke inkludert)
+    int numFrames = 5;                 // Totalt antall rammer i sprite-arket
+
+    // Oppdater animasjonsrammen
+    if (framesCounter >= frameUpdateRate) 
+    {
+        framesCounter = 0; 
+        currentFrame++;
+
+        if (currentFrame >= animationEndFrame)
+        {
+            isDead = true;
+        }
+    }
+
+    // Beregn bredden og startpunktet for den nåværende animasjonsrammen
+    float frameWidth = (float)texture.width / numFrames;
+    float currentFrameStartX = currentFrame * frameWidth;
+
+    // Returner rektangelet for den nåværende animasjonsrammen
+    Rectangle sourceRec = { currentFrameStartX, 0.0f, frameWidth, (float)texture.height };
+    
+    return sourceRec;
+}
+
 
 void Grenade::HandleCollisions(Hitbox& otherHitbox)
 {

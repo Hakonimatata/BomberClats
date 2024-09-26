@@ -19,7 +19,7 @@ class Player
 {
     public:
 
-        Player(float posX, float posY);
+        Player(float posX, float posY, int playerID);
         ~Player();
         
         void init(PlayerControls controls);
@@ -44,22 +44,31 @@ class Player
 
         void HandleCollisions(Hitbox& otherHitbox);
 
+        void DrawHealthBar(float posX, float posY, float size, Color color);
+        void InflictDamage(float damage) { health -= damage; }
+        float GetHealth() { return health; }
+        int GetPlayerID() { return playerID; }
+
     private:
         void jump();
         void fall();
         void throwGrenade(PlayerCommand& playerCommand);
+        void die();
 
         float width = 40;
         float height = 40;
         float posX, posY;
         float velX, velY;
         float maxFallVel = 100.0f;
+        int playerID;
 
         // Player state
         const int numJumps = 2;
         int jumpsLeft;
         PlayerFacing playerFacing = PlayerFacing::right;
         bool onGround = false;
+        float health = 100.0f;
+        bool isDead = false;
         
         // Animation
         int currentFrame = 0;
