@@ -45,11 +45,27 @@ void GridMap::DrawMap() const
     }
 }
 
-void GridMap::LoadLevel(const std::string& filename) {
+void GridMap::CreateEmptyMap(int gridWidth, int gridHeight)
+{
+    this->gridWidth = gridWidth;
+    this->gridHeight = gridHeight;
+
+    // Resize map according to grid dimensions
+    map.resize(gridHeight, std::vector<Tile>(gridWidth, Tile()));
+
+    for (int y = 0; y < gridHeight; ++y) {
+        for (int x = 0; x < gridWidth; ++x) {
+            Tile tile = Tile(-1);
+            map[y][x] = tile;
+        }
+    }
+}
+
+int GridMap::LoadLevel(const std::string& filename) {
     std::ifstream inFile(filename);
     if (!inFile) {
         std::cerr << "Failed to open file for loading: " << filename << std::endl;
-        return;
+        return -1;
     }
 
     inFile >> gridWidth >> gridHeight;
@@ -70,6 +86,8 @@ void GridMap::LoadLevel(const std::string& filename) {
     }
 
     inFile.close();
+
+    return 0;
 }
 
 void GridMap::SaveLevel(const std::string& filename) const {

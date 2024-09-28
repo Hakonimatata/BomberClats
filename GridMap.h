@@ -15,10 +15,12 @@ class GridMap
         void initTileSet();
         void DrawMap() const;  
 
-        void LoadLevel(const string& filename);
+        int LoadLevel(const string& filename);
         void SaveLevel(const string& filename) const;
 
         void DrawGrid() const;
+
+        void CreateEmptyMap(int gridWidth, int gridHeight);
 
         static FloatPoint GetPosFromGridCoords(float gridshiftX, float gridshiftY, int gridX, int gridY, int tileSize);
 

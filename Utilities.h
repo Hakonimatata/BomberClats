@@ -25,13 +25,20 @@ struct PlayerControls {
 
 enum class MenuSelection {
     None, 
-    StartGame
+    StartGame,
+    StartLevelEditor,
 };
 
 struct Context 
 {
     int numPlayers = 1;
     MenuSelection menuSelection = MenuSelection::None;
+    
+    // For level editor
+    int gridWidth = 40;
+    int gridHeight = 20;
+
+    bool editExistingMap = false;
 };
 
 

@@ -47,7 +47,11 @@ class Player
         void DrawHealthBar(float posX, float posY, float size, Color color);
         void InflictDamage(float damage) { health -= damage; }
         float GetHealth() { return health; }
+        void SetHelth(float health) { this->health = health; }
+        bool IsDead() { return isDead; }
         int GetPlayerID() { return playerID; }
+
+        void Reset();
 
     private:
         void jump();
@@ -57,6 +61,7 @@ class Player
 
         float width = 40;
         float height = 40;
+        const float startPosX, startPosY;
         float posX, posY;
         float velX, velY;
         float maxFallVel = 100.0f;

@@ -14,6 +14,7 @@ Menu::Menu(int winW, int winH) : winW(winW), winH(winH)
     startButton = Button("assets/button.png", startX, startY, startWidth, startHeight);
     addPlayerButton = Button("assets/button.png", startX - startWidth - 10, startY, startWidth, startHeight);
     removePlayerButton = Button("assets/button.png", startX + startWidth + 10, startY, startWidth, startHeight);
+    startLevelEditorButton = Button("assets/button.png", startX, startY + startHeight + 10, startWidth, startHeight);
 
 
     // Add first player
@@ -27,6 +28,7 @@ void Menu::Draw()
     startButton.Draw();
     addPlayerButton.Draw();
     removePlayerButton.Draw();
+    startLevelEditorButton.Draw();
 
     // Draw players
     DrawPlayers();
@@ -58,6 +60,12 @@ void Menu::HandleButtonClicks(Context& context)
         else if (removePlayerButton.isClicked(mouseX, mouseY))
         {
             RemovePlayer(context);
+        }
+
+        else if (startLevelEditorButton.isClicked(mouseX, mouseY))
+        {
+            context.menuSelection = MenuSelection::StartLevelEditor;
+            isRunning = false;
         }
 
     }
@@ -108,7 +116,7 @@ void Menu::DrawPlayers()
 {
     for (int i = 0; i < playerPositions.size(); ++i)
     {   
-        int numFrames = 5;
+        int numFrames = playerTextures.at(0).width / playerTextures.at(0).height;
         Rectangle sourceRec = {0.0f, 0.0f, (float)playerTextures[i].width / numFrames, (float)playerTextures[i].height};
         Rectangle destRec = {playerPositions[i].x, playerPositions[i].y, playerSize, playerSize};
         DrawTexturePro(playerTextures[i], sourceRec, destRec, {0, 0}, 0.0f, WHITE);

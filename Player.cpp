@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(float posX, float posY, int playerID) : 
-    posX(posX), posY(posY), hitbox{posX, posY, 100, 100}, playerID(playerID)
+    posX(posX), posY(posY), startPosX(posX), startPosY(posY), hitbox{posX, posY, 100, 100}, playerID(playerID)
 {}
 
 Player::~Player()
@@ -11,7 +11,6 @@ Player::~Player()
 void Player::init(PlayerControls controls)
 {
     this->controls = controls;
-    jumpsLeft = numJumps;
 }
 
 void Player::HandleInput(PlayerCommand& playerCommand) 
@@ -110,6 +109,16 @@ void Player::HandleCollisions(Hitbox &otherHitbox)
     }
 }
 
+void Player::Reset()
+{
+    health = 100.0f;
+    isDead = false;
+    posX = startPosX;
+    posY = startPosY;
+    velX = 0.0f;
+    velY = 0.0f;
+}
+
 void Player::jump()
 {
     if (jumpsLeft > 0) 
@@ -176,7 +185,7 @@ Rectangle Player::getSourceRect(Texture2D& texture)
         }
     }
 
-    int numFrames = 5;
+    int numFrames = texture.width / texture.height;
     float currentFrameStartX = currentFrame * (float)texture.width / numFrames;
     float frameWidth = (float)texture.width / numFrames;
 
@@ -185,13 +194,17 @@ Rectangle Player::getSourceRect(Texture2D& texture)
         int dethFrame = 4;
         return { (float)dethFrame * (float)texture.width / numFrames, 0.0f, frameWidth, (float)texture.height };
     }
+    if(!onGround && velX != 0) // Jumping
+    {
+        //  Return 6th frame (index 5)
+        int jumpFrame = 5;
+        Rectangle sourceRec = { (float)jumpFrame * (float)texture.width / numFrames, 0.0f, frameWidth, (float)texture.height };
+        if (playerFacing == PlayerFacing::left) { sourceRec.width *= -1; }
+        return sourceRec;
+    }
 
     Rectangle sourceRec = { currentFrameStartX, 0.0f, frameWidth, (float)texture.height };
-    // Sjekk hvilken retning spilleren vender
-    if (playerFacing == PlayerFacing::left) {
-        // Flipp teksten horisontalt
-        sourceRec.width *= -1; // Gjør bredden negativ for å flippe
-    }
+    if (playerFacing == PlayerFacing::left) { sourceRec.width *= -1; }
     return sourceRec;
 }
 

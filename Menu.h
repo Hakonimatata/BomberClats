@@ -4,6 +4,7 @@
 #include "Button.h"
 #include "Utilities.h"
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -31,6 +32,7 @@ class Menu
         Button startButton;
         Button addPlayerButton;
         Button removePlayerButton;
+        Button startLevelEditorButton;
 
 
         // Display Players:

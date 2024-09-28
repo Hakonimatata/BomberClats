@@ -49,7 +49,7 @@ void Game::initPlayers()
     if (numPlayers >= 2)
     {
         Player player2 = Player(200, 0, 2);
-        player2.init(PlayerControls{KEY_A, KEY_D, KEY_W, KEY_Q});
+        player2.init(PlayerControls{KEY_A, KEY_D, KEY_W, KEY_LEFT_CONTROL});
         players.push_back(player2);
         playerTextures.push_back(LoadTexture("assets/spriteSheet2.png"));
     }
@@ -102,43 +102,6 @@ void Game::HandleCollitions()
             }
         }
     }
-
-    // Check collition for grenades and other weapons here
-    for (auto& grenade : grenades) 
-    {   
-        if (!grenade.exploded) 
-        {
-            // Check if player is within radius of explosion
-            for (Player& player : players) 
-            {
-                // Auto explode on other players hitbox
-                if (CheckCollisionRecs(grenade.getHitbox().GetRect(), player.getHitbox().GetRect())
-                    && player.GetPlayerID() != grenade.getThrowerID())
-                {
-                    grenade.explode();
-                    player.InflictDamage(grenade.getDamage());
-                }
-                
-            }
-        }
-        else if (grenade.exploded && !grenade.inflictedDamage) 
-        {
-            for (Player& player : players) 
-            {
-                // get distance between player and grenade
-                float dist = sqrt(pow(player.getPosX() - grenade.getPosX(), 2) + pow(player.getPosY() - grenade.getPosY(), 2));
-                
-                float splashDistance = 200.0f;
-                if (dist < splashDistance) 
-                {
-                    float damage = grenade.getDamage() * (splashDistance - dist) / splashDistance;
-                    player.InflictDamage(damage);
-                    grenade.inflictedDamage = true;
-                }
-            }
-        }
-    }
-
 }
 
 void Game::updateCamera()
@@ -201,10 +164,9 @@ void Game::handleEvents()
         resize(newWidth, newHeight);
     }
 
-    if(IsKeyPressed(KeyboardKey::KEY_ESCAPE))
-    {
-        isRunning = false;
-    }
+    if(IsKeyPressed(KeyboardKey::KEY_ESCAPE)){ isRunning = false; }
+
+    if(IsKeyPressed(KeyboardKey::KEY_R)){ Reset(); }
 
     // Get player input from keyboard
     for (auto& player : players)
@@ -230,6 +192,18 @@ void Game::update(float deltaTime)
     // Update players
     for(auto& player : players) { player.Update(); }
 
+    // Update grenades and handle logic
+    UpdateGrenades(deltaTime);
+
+    // Handle collisions
+    HandleCollitions();
+
+    // Update camera
+    updateCamera();
+}
+
+void Game::UpdateGrenades(float deltaTime)
+{
     // Update grenades
     for (int i = grenades.size() - 1; i >= 0; --i)
     {
@@ -246,11 +220,37 @@ void Game::update(float deltaTime)
         }
     }
 
-    // Handle collisions
-    HandleCollitions();
-
-    // Update camera
-    updateCamera();
+    // Grenade logic
+    for (auto& grenade : grenades) 
+    {   
+        // Check if player is within radius of explosion
+        for (Player& player : players) 
+        {
+            // Auto explode on other players hitbox
+            if (CheckCollisionRecs(grenade.getHitbox().GetRect(), player.getHitbox().GetRect())
+                && player.GetPlayerID() != grenade.getThrowerID()  
+                && !grenade.exploded &&  !player.IsDead())
+            {
+                grenade.explode();
+            }
+        }
+        if(grenade.exploded && !grenade.inflictedDamage)
+        {
+            for (Player& player : players)
+            {
+                // get distance between player and grenade
+                float dist = sqrt(pow(player.getPosX() - grenade.getPosX(), 2) + pow(player.getPosY() - grenade.getPosY(), 2));
+                
+                float splashDistance = 200.0f;
+                if (dist < splashDistance) 
+                {
+                    float damage = grenade.getDamage() * (splashDistance - dist) / splashDistance;
+                    player.InflictDamage(damage);
+                }
+            }
+            grenade.inflictedDamage = true;
+        }
+    }
 }
 
     
@@ -279,4 +279,14 @@ void Game::clean()
     UnloadTexture(grenadeTexture);
     UnloadTexture(backgroundTexture);
 
+}
+
+void Game::Reset()
+{
+    for(auto& player : players) 
+    {
+        player.Reset();
+    }
+    gridShiftX = 0;
+    gridShiftY = 0;
 }

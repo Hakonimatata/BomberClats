@@ -12,6 +12,7 @@
 		"ostream": "cpp",
 		"*.m": "cpp",
 		"new": "cpp",
-		"cmath": "cpp"
+		"cmath": "cpp",
+		"random": "cpp"
 	}
 }

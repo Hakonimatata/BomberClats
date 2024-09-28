@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include "Game.h"
 #include "Menu.h"
+#include "LevelEditor.h"
 
 using namespace std;
 
@@ -36,9 +37,32 @@ int main () {
 
         switch (context.menuSelection)
         {
+            case MenuSelection::StartLevelEditor:
+            {
+                LevelEditor levelEditor = LevelEditor();
+                levelEditor.init(screenWidth, screenHeight, context);
+                while (levelEditor.running() && !WindowShouldClose()) 
+                {
+                    BeginDrawing();
+                    ClearBackground(BLACK);
+                    
+                        levelEditor.handleInput();
+                        levelEditor.update();
+                        levelEditor.render();
+                    
+                    EndDrawing();
+                }
+            }   
+            break;
+
             case MenuSelection::StartGame:
             {
                 // ToggleBorderlessWindowed();
+                int screenWidth = GetMonitorWidth(0);  
+                int screenHeight = GetMonitorHeight(0);
+                SetWindowSize(screenWidth, screenHeight);
+                ToggleFullscreen();
+                
                 
                 Game game = Game(screenWidth, screenHeight, context.numPlayers);
                 game.init();

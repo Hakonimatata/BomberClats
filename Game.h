@@ -36,6 +36,8 @@ class Game : public GridMap
         void resize(int newWidth, int newHeight);
         void HandleCollitions();
         void updateCamera();
+        void Reset();
+        void UpdateGrenades(float deltaTime);
 
         // Players
         int numPlayers;
