@@ -170,7 +170,7 @@ void Player::DrawCrown(Texture2D &texture)
 
 void Player::DrawScore(int score)
 {
-    DrawText(to_string(score).c_str(), posX, posY, 20, WHITE);
+    DrawText(to_string(score).c_str(), posX, posY - 15, 20, WHITE);
 
 }
 

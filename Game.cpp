@@ -22,9 +22,9 @@ void Game::init()
     // Initialize the map
     initTileSet();
 
-    initPlayers();
-
     LoadLevel("Levels/level.txt");
+
+    initPlayers();
 
     crownTexture = LoadTexture("assets/crown.png");
 
@@ -42,9 +42,11 @@ void Game::init()
 
 void Game::initPlayers()
 {
+    int spaceBetweenPlayers = gridWidth * tileSize / (numPlayers + 1);
+
     if (numPlayers >= 1 ) 
     {
-        Player player = Player(100, 0, 1);
+        Player player = Player(spaceBetweenPlayers, 0, 1);
         player.init(PlayerControls{KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_RIGHT_CONTROL});
         players.push_back(player);
         playerTextures.push_back(LoadTexture("assets/spriteSheet1.png"));
@@ -52,7 +54,7 @@ void Game::initPlayers()
     
     if (numPlayers >= 2)
     {
-        Player player2 = Player(200, 0, 2);
+        Player player2 = Player(spaceBetweenPlayers * 2, 0, 2);
         player2.init(PlayerControls{KEY_A, KEY_D, KEY_W, KEY_LEFT_CONTROL});
         players.push_back(player2);
         playerTextures.push_back(LoadTexture("assets/spriteSheet2.png"));
@@ -60,7 +62,7 @@ void Game::initPlayers()
 
     if (numPlayers >= 3)
     {
-        Player player3 = Player(300, 0, 3);
+        Player player3 = Player(spaceBetweenPlayers * 3, 0, 3);
         player3.init(PlayerControls{KEY_J, KEY_L, KEY_I, KEY_SPACE});
         players.push_back(player3);
         playerTextures.push_back(LoadTexture("assets/spriteSheet3.png"));
@@ -104,6 +106,15 @@ void Game::HandleCollitions()
                     player.HandleCollisions(tileHitbox);
                 }
             }
+        }
+    }
+
+    // Kill out of bounds players
+    for (int i = 0; i < players.size(); ++i) 
+    {
+        if (players[i].getPosY() > gridShiftY + gridHeight * tileSize)
+        {
+            players[i].SetHelth(0);
         }
     }
 }
@@ -214,13 +225,8 @@ void Game::UpdateGrenades(float deltaTime)
     for (int i = grenades.size() - 1; i >= 0; --i)
     {
         grenades.at(i).Update(deltaTime);
-        // Temp: Remove if out of bounds
-        if (grenades.at(i).getPosX() > WinW || grenades.at(i).getPosX() < 0 || grenades.at(i).getPosY() > WinH || grenades.at(i).getPosY() < 0)
-        {   
-            grenades.erase(grenades.begin() + i);
-        }
         // Remove if dead
-        else if (grenades.at(i).isDead)
+        if (grenades.at(i).isDead)
         {
             grenades.erase(grenades.begin() + i);
         }

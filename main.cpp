@@ -23,7 +23,7 @@ int main () {
     {
         // Menu loop
         Menu menu = Menu(screenWidth, screenHeight, context);
-        while(menu.Running() && !WindowShouldClose()) 
+        while(menu.Running() && !WindowShouldClose())
         {
             BeginDrawing();
             ClearBackground(BLACK);
@@ -58,12 +58,12 @@ int main () {
             case MenuSelection::StartGame:
             {
                 // ToggleBorderlessWindowed();
-                // int screenWidth = GetMonitorWidth(0);  
-                // int screenHeight = GetMonitorHeight(0);
-                // SetWindowSize(screenWidth, screenHeight);
-                // ToggleFullscreen();
+                int screenWidth = GetMonitorWidth(0);  
+                int screenHeight = GetMonitorHeight(0);
+                SetWindowSize(screenWidth, screenHeight);
+                ToggleFullscreen();
                 
-                
+                // SetWindowSize(screenWidth * 2, screenHeight);
                 Game game = Game(screenWidth, screenHeight, context.numPlayers);
                 game.init();
 

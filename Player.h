@@ -66,7 +66,7 @@ class Player
         const float startPosX, startPosY;
         float posX, posY;
         float velX, velY;
-        float maxFallVel = 100.0f;
+        float maxFallVel = 10.0f;
         int playerID;
 
         // Player state
