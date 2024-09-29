@@ -1,7 +1,7 @@
 #include "Menu.h"
 
 
-Menu::Menu(int winW, int winH) : winW(winW), winH(winH)
+Menu::Menu(int winW, int winH, Context& context) : winW(winW), winH(winH)
 {
     isRunning = true;
 
@@ -9,15 +9,15 @@ Menu::Menu(int winW, int winH) : winW(winW), winH(winH)
     float startX = winW / 2 - 100;
     float startY = winH / 2 - 50;
     float startWidth = 200;
-    float startHeight = 100;
+    float startHeight = 70;
 
-    startButton = Button("assets/button.png", startX, startY, startWidth, startHeight);
-    addPlayerButton = Button("assets/button.png", startX - startWidth - 10, startY, startWidth, startHeight);
-    removePlayerButton = Button("assets/button.png", startX + startWidth + 10, startY, startWidth, startHeight);
-    startLevelEditorButton = Button("assets/button.png", startX, startY + startHeight + 10, startWidth, startHeight);
-
+    startButton = Button("assets/Buttons/startButton.png", startX, startY, startWidth, startHeight);
+    addPlayerButton = Button("assets/Buttons/addPlayerButton.png", startX - startWidth - 10, startY, startWidth / 2, startHeight);
+    removePlayerButton = Button("assets/Buttons/removePlayerButton.png", startX - startWidth - 10 + startWidth / 2, startY, startWidth / 2, startHeight);
+    startLevelEditorButton = Button("assets/Buttons/levelEditorButton.png", startX + startWidth + 10, startY, startWidth, startHeight);
 
     // Add first player
+    context.numPlayers = 1;
     playerTextures.push_back(LoadTexture("assets/spriteSheet1.png"));
     playerPositions.push_back({(float)(winW), (float)(winH / 1.5)});
 }
@@ -48,13 +48,12 @@ void Menu::HandleButtonClicks(Context& context)
         {
             // Start Game
             context.menuSelection = MenuSelection::StartGame;
-            isRunning = false;
+            isRunning = false; // quit menu
         }
 
         else if (addPlayerButton.isClicked(mouseX, mouseY)) 
         {
-            // Add Player
-            AddPlayer(context);
+            AddPlayer(context); 
         }
 
         else if (removePlayerButton.isClicked(mouseX, mouseY))
@@ -65,7 +64,7 @@ void Menu::HandleButtonClicks(Context& context)
         else if (startLevelEditorButton.isClicked(mouseX, mouseY))
         {
             context.menuSelection = MenuSelection::StartLevelEditor;
-            isRunning = false;
+            isRunning = false; // quit menu
         }
 
     }
@@ -82,26 +81,26 @@ void Menu::AddPlayer(Context& context)
 {
     float spaceBetweenPlayers = 150.0f;
 
-    if (playerTextures.size() == 1) 
+    if (context.numPlayers == 1)  // from 1 to 2
     {
         playerTextures.push_back(LoadTexture("assets/spriteSheet2.png"));
         playerPositions.push_back({playerPositions[0].x + spaceBetweenPlayers, playerPositions[0].y});
 
-        context.numPlayers = 2;
+        context.numPlayers++;
     }
 
-    else if (playerTextures.size() == 2)
+    else if (context.numPlayers == 2) // from 2 to 3
     {
         playerTextures.push_back(LoadTexture("assets/spriteSheet3.png"));
         playerPositions.push_back({playerPositions[1].x + spaceBetweenPlayers, playerPositions[1].y});  
 
-        context.numPlayers = 3;
+        context.numPlayers++;
     }
 }
 
 void Menu::RemovePlayer(Context& context)
 {
-    if (playerTextures.size() > 1) 
+    if (context.numPlayers > 1) 
     {   
         UnloadTexture(playerTextures.back());
         playerTextures.pop_back();

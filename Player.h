@@ -27,6 +27,8 @@ class Player
         void HandleInput(PlayerCommand& playerCommand);
         void Update();
         void Draw(Texture2D& texture);
+        void DrawCrown(Texture2D& texture);
+        void DrawScore(int score);
 
         Hitbox getHitbox() { return hitbox; }
         float getPosX() { return posX; }

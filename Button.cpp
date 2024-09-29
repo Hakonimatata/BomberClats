@@ -3,7 +3,7 @@
 
 Button::Button(const char* texturePath, float posX, float posY, float width, float height) : buttonRect({posX, posY, width, height})
 {
-    buttonTexture = LoadTexture("assets/button.png");
+    buttonTexture = LoadTexture(texturePath);
 }
 
 Button::~Button()

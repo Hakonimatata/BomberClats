@@ -12,7 +12,7 @@ using namespace std;
 class Menu 
 {
     public:
-        Menu(int winW, int winH);
+        Menu(int winW, int winH, Context& context);
         ~Menu() = default;
 
         void Draw();

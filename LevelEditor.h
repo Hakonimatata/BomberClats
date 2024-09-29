@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include "GridMap.h"
+#include "Button.h"
 
 using namespace std;
 
@@ -19,7 +20,7 @@ public:
     void handleInput();
     void init(int width, int height, Context context);
     void update();
-    void render();
+    void draw();
 
     bool running() { return isRunning; }
 
@@ -38,5 +39,10 @@ private:
     bool isRunning;
     int WinW, WinH;
     int mouseX, mouseY;
-    
+
+    float gridEndX;
+
+
+    Button exitButton;
+    Button saveButton;
 };

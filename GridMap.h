@@ -4,6 +4,7 @@
 #include <vector>
 #include "TileSet.h"
 #include <fstream>
+#include "Utilities.h"
 
 class GridMap
 {

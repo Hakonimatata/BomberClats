@@ -22,7 +22,7 @@ int main () {
     while (WindowShouldClose() == false)
     {
         // Menu loop
-        Menu menu = Menu(screenWidth, screenHeight);
+        Menu menu = Menu(screenWidth, screenHeight, context);
         while(menu.Running() && !WindowShouldClose()) 
         {
             BeginDrawing();
@@ -48,7 +48,7 @@ int main () {
                     
                         levelEditor.handleInput();
                         levelEditor.update();
-                        levelEditor.render();
+                        levelEditor.draw();
                     
                     EndDrawing();
                 }
@@ -58,10 +58,10 @@ int main () {
             case MenuSelection::StartGame:
             {
                 // ToggleBorderlessWindowed();
-                int screenWidth = GetMonitorWidth(0);  
-                int screenHeight = GetMonitorHeight(0);
-                SetWindowSize(screenWidth, screenHeight);
-                ToggleFullscreen();
+                // int screenWidth = GetMonitorWidth(0);  
+                // int screenHeight = GetMonitorHeight(0);
+                // SetWindowSize(screenWidth, screenHeight);
+                // ToggleFullscreen();
                 
                 
                 Game game = Game(screenWidth, screenHeight, context.numPlayers);

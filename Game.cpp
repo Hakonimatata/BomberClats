@@ -8,7 +8,9 @@
 using namespace std;
 
 Game::Game(int winW, int winH, int numPlayers) : GridMap(), WinW(winW), WinH(winH), numPlayers(numPlayers)
-{}
+{
+    playerScores = vector<int>(numPlayers, 0);
+}
 
 Game::~Game()
 {
@@ -23,6 +25,8 @@ void Game::init()
     initPlayers();
 
     LoadLevel("Levels/level.txt");
+
+    crownTexture = LoadTexture("assets/crown.png");
 
     // init weapons
     grenadeTexture = LoadTexture("assets/grenade.png");
@@ -200,6 +204,8 @@ void Game::update(float deltaTime)
 
     // Update camera
     updateCamera();
+
+    UpdateScore();
 }
 
 void Game::UpdateGrenades(float deltaTime)
@@ -238,6 +244,11 @@ void Game::UpdateGrenades(float deltaTime)
         {
             for (Player& player : players)
             {
+                // Only do splash damage if no tiles are in between
+                // if (!IsTileBetweenPoints({grenade.getPosX(), grenade.getPosY()}, {player.getPosX() + player.getHitbox().GetWidth() / 2, player.getPosY() + player.getHitbox().GetHeight() / 2}, map, tileSize, gridShiftX, gridShiftY)) 
+                // {
+                // }
+                
                 // get distance between player and grenade
                 float dist = sqrt(pow(player.getPosX() - grenade.getPosX(), 2) + pow(player.getPosY() - grenade.getPosY(), 2));
                 
@@ -247,6 +258,7 @@ void Game::UpdateGrenades(float deltaTime)
                     float damage = grenade.getDamage() * (splashDistance - dist) / splashDistance;
                     player.InflictDamage(damage);
                 }
+
             }
             grenade.inflictedDamage = true;
         }
@@ -269,6 +281,12 @@ void Game::draw()
     // Draw grenades
     for (auto& grenade : grenades) { grenade.Draw(grenadeTexture); }
 
+    // Draw crown on leader
+    if (currentLeaderIndex != -1) { players[currentLeaderIndex].DrawCrown(crownTexture); }
+
+    // Draw player scores
+    for (int i = 0; i < players.size(); ++i) { players[i].DrawScore(playerScores[i]); }
+
     DrawMap();
 }
 
@@ -289,4 +307,46 @@ void Game::Reset()
     }
     gridShiftX = 0;
     gridShiftY = 0;
+}
+
+void Game::UpdateScore()
+{
+    int playersAlive = 0;
+    int lastPlayerAliveIndex = 0; // For å holde styr på den siste gjenlevende spilleren
+
+    for (int i = 0; i < players.size(); ++i) 
+    {
+        if (!players[i].IsDead()) 
+        {
+            ++playersAlive;
+            lastPlayerAliveIndex = i; // Siste overlevende spiller
+        }
+    }
+
+    // Increment only if only one player is alive
+    if (playersAlive == 1 && !hasIncrementedScore) 
+    {
+        playerScores[lastPlayerAliveIndex]++;
+        hasIncrementedScore = true; // Only increment once
+    }
+
+    // If players are alive, reset hasIncrementedScore
+    if (playersAlive > 1) { hasIncrementedScore = false; }
+    
+    // Get player with highest score
+    int highestScorePlayerIndex = distance(playerScores.begin(), max_element(playerScores.begin(), playerScores.end()));
+    int highestScore = playerScores[highestScorePlayerIndex];
+
+    // Check if unique
+    int countHighestScore = count(playerScores.begin(), playerScores.end(), highestScore);
+
+    if (countHighestScore > 1) // Not unique
+    {
+        // do not draw crown
+        currentLeaderIndex = -1;
+    }
+    else // Unique, draw crown on this player
+    {
+        currentLeaderIndex = highestScorePlayerIndex;
+    }
 }

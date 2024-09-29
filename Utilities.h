@@ -1,5 +1,10 @@
 #pragma once
 
+#include "TileSet.h"
+#include <raylib.h> 
+
+using namespace std;
+
 struct FloatPoint{
     float x;
     float y;
@@ -32,6 +37,8 @@ enum class MenuSelection {
 struct Context 
 {
     int numPlayers = 1;
+    const int maxNumPlayers = 3;
+    const int minNumPlayers = 1;
     MenuSelection menuSelection = MenuSelection::None;
     
     // For level editor
@@ -56,3 +63,5 @@ struct PlayerCommand
     float velX;
     float velY;
 };
+
+bool IsTileBetweenPoints(Vector2 start, Vector2 end, vector<vector<Tile>>& tileMap, int tileSize, float gridShiftX, float gridShiftY);

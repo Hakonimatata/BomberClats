@@ -18,12 +18,17 @@ void LevelEditor::init(int width, int height, Context context)
     // Set  grid shift based on window size
     gridShiftX = WinW * 0.1;
     gridShiftY = WinH * 0.1;
+
+    gridEndX = WinW * 0.8;
     
     tileSize = 32; // Sets the size of the tiles in the editor
 
     // Initialize the set of tiles
     initTileSet();
 
+    // create empty map
+    CreateEmptyMap(context.gridWidth, context.gridHeight);
+    
     // Load level
     if (LoadLevel("Levels/level.txt") == -1)  
     {
@@ -31,6 +36,13 @@ void LevelEditor::init(int width, int height, Context context)
     }
 
     // CreateEmptyMap(context.gridWidth, context.gridHeight);
+
+
+    // Init buttons
+    float buttonWidth = 50;
+    float buttonHeight = buttonWidth * 0.7;
+    exitButton = Button("assets/Buttons/exitButton.png", gridEndX + 10, 10, buttonWidth, buttonHeight);
+    saveButton = Button("assets/Buttons/saveButton.png", gridEndX + buttonWidth + 20, 10, buttonWidth, buttonHeight);
 
     // ----------Level editor running---------------
     isRunning = true;
@@ -48,16 +60,21 @@ void LevelEditor::handleInput()
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) 
     {
         // Handle left click
-        PlaceTile();
         SelectTile();
+        
+        PlaceTile();
+
+        if (exitButton.isClicked(mouseX, mouseY))
+        {
+            isRunning = false;
+        }
+        else if (saveButton.isClicked(mouseX, mouseY))
+        {
+            SaveLevel("Levels/level.txt");
+        }
     }
 
     MooveCamera();
-
-    if (IsKeyPressed(KEY_S)) {
-        SaveLevel("Levels/level.txt");
-    }
-
 }
 
 void LevelEditor::MooveCamera()
@@ -89,7 +106,7 @@ void LevelEditor::update()
 }
 
 
-void LevelEditor::render()
+void LevelEditor::draw()
 {
     // Add to renderer here
     DrawGrid();
@@ -97,14 +114,23 @@ void LevelEditor::render()
     // Draw map and tiles
     DrawMap();
 
+    // Draw menu background
+    DrawRectangle(gridEndX, 0, WinW - gridEndX, WinH, { 0, 0, 0, 150 });
+
     // Draw available tiles
     DrawAvailableTiles();
 
     DrawSelectedTile();
+
+    //draw buttons
+    exitButton.Draw();
+    saveButton.Draw();
 }
 
 
 void LevelEditor::PlaceTile() {
+
+    if(mouseX > gridEndX) return;
 
     int gridX = (mouseX - gridShiftX) / tileSize;
     int gridY = (mouseY - gridShiftY) / tileSize;
@@ -146,6 +172,7 @@ void LevelEditor::SelectTile()
 
 void LevelEditor::DrawSelectedTile()
 {
+    if (mouseX > gridEndX) return; // only draw if in editor grid
     // Get selected tile texture 
     int selectedTileId = selectedTile.id;
     if (selectedTileId == -1) return;

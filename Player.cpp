@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(float posX, float posY, int playerID) : 
-    posX(posX), posY(posY), startPosX(posX), startPosY(posY), hitbox{posX, posY, 100, 100}, playerID(playerID)
+    posX(posX), posY(posY), startPosX(posX), startPosY(posY), hitbox{posX, posY, 40, 40}, playerID(playerID)
 {}
 
 Player::~Player()
@@ -161,6 +161,17 @@ void Player::Draw(Texture2D& texture)
 
     // Tegn teksten
     DrawTexturePro(texture, sourceRec, destRec, { 0, 0 }, 0.0f, WHITE);
+}
+
+void Player::DrawCrown(Texture2D &texture)
+{
+    DrawTexturePro(texture, { 0, 0, (float)texture.width, (float)texture.height }, { posX, posY - height / 2, width, height }, { 0, 0 }, 0.0f, WHITE);
+}
+
+void Player::DrawScore(int score)
+{
+    DrawText(to_string(score).c_str(), posX, posY, 20, WHITE);
+
 }
 
 Rectangle Player::getSourceRect(Texture2D& texture)
