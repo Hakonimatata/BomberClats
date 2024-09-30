@@ -251,19 +251,21 @@ void Game::UpdateGrenades(float deltaTime)
             for (Player& player : players)
             {
                 // Only do splash damage if no tiles are in between
-                // if (!IsTileBetweenPoints({grenade.getPosX(), grenade.getPosY()}, {player.getPosX() + player.getHitbox().GetWidth() / 2, player.getPosY() + player.getHitbox().GetHeight() / 2}, map, tileSize, gridShiftX, gridShiftY)) 
-                // {
-                // }
-                
-                // get distance between player and grenade
-                float dist = sqrt(pow(player.getPosX() - grenade.getPosX(), 2) + pow(player.getPosY() - grenade.getPosY(), 2));
-                
-                float splashDistance = 200.0f;
-                if (dist < splashDistance) 
+                FloatPoint playerMidPos = {player.getPosX() + player.getHitbox().GetWidth() / 2, player.getPosY() + player.getHitbox().GetHeight() / 2};
+                FloatPoint grenadePos = {grenade.getPosX(), grenade.getPosY()};
+                if (!isTileBetweenPoints(playerMidPos, grenadePos)) 
                 {
-                    float damage = grenade.getDamage() * (splashDistance - dist) / splashDistance;
-                    player.InflictDamage(damage);
+                    // get distance between player and grenade
+                    float dist = sqrt(pow(player.getPosX() - grenade.getPosX(), 2) + pow(player.getPosY() - grenade.getPosY(), 2));
+                    
+                    float splashDistance = 200.0f;
+                    if (dist < splashDistance) 
+                    {
+                        float damage = grenade.getDamage() * (splashDistance - dist) / splashDistance;
+                        player.InflictDamage(damage);
+                    }
                 }
+                
 
             }
             grenade.inflictedDamage = true;

@@ -140,3 +140,45 @@ FloatPoint GridMap::GetPosFromGridCoords(float gridshiftX, float gridshiftY, int
 
     return {posX, posY};
 }
+
+bool GridMap::isTileBetweenPoints(FloatPoint& point1, FloatPoint& point2)
+{
+    // distance between points
+    float dx = point2.x - point1.x;
+    float dy = point2.y - point1.y;
+
+    // num steps is the max
+    int steps = std::max(abs(dx), abs(dy)) / tileSize;
+
+    // Get increment per step
+    float xIncrement = dx / steps;
+    float yIncrement = dy / steps;
+
+    // start at point1 then iterate to point2
+    float x = point1.x;
+    float y = point1.y;
+
+    // Check all steps on the line
+    for (int i = 0; i <= steps; i++) 
+    {
+        // Get grid coordinates for current point
+        int gridX = (x - gridShiftX) / tileSize;
+        int gridY = (y - gridShiftY) / tileSize;
+
+        // continue if invalid grid coordinates
+        if (gridX < 0 || gridX >= gridWidth || gridY < 0 || gridY >= gridHeight) continue;
+
+        // Return true if a tile is found at the point
+        if (map[gridY][gridX].id != -1) 
+        {
+            return true;
+        }
+
+        // Next point
+        x += xIncrement;
+        y += yIncrement;
+    }
+    
+    // No tiles found between point1 and point2, return false
+    return false;
+}

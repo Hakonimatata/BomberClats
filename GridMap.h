@@ -25,6 +25,7 @@ class GridMap
 
         static FloatPoint GetPosFromGridCoords(float gridshiftX, float gridshiftY, int gridX, int gridY, int tileSize);
 
+        bool isTileBetweenPoints(FloatPoint& point1, FloatPoint& point2);
 
         int gridWidth;
         int gridHeight;

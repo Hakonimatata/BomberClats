@@ -161,7 +161,6 @@ void LevelEditor::SelectTile()
     // loop through avalable tiles and check if mouse is inside
     for (int id = 0; id < tileSet->textures.size(); ++id) 
     {
-
         Rectangle rect = GetAvailableTileRect(id);
 
         if (mouseX >= rect.x && mouseX <= rect.x + rect.width && mouseY >= rect.y && mouseY <= rect.y + rect.height) {

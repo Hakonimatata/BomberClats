@@ -63,5 +63,3 @@ struct PlayerCommand
     float velX;
     float velY;
 };
-
-bool IsTileBetweenPoints(Vector2 start, Vector2 end, vector<vector<Tile>>& tileMap, int tileSize, float gridShiftX, float gridShiftY);
