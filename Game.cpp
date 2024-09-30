@@ -17,7 +17,7 @@ Game::~Game()
     clean();
 }
 
-void Game::init()
+void Game::init() // TODO: move to constructor?
 {
     // Initialize the map
     initTileSet();
@@ -63,7 +63,7 @@ void Game::initPlayers()
     if (numPlayers >= 3)
     {
         Player player3 = Player(spaceBetweenPlayers * 3, 0, 3);
-        player3.init(PlayerControls{KEY_J, KEY_L, KEY_I, KEY_SPACE});
+        player3.init(PlayerControls{KEY_G, KEY_J, KEY_Y, KEY_SPACE});
         players.push_back(player3);
         playerTextures.push_back(LoadTexture("assets/spriteSheet3.png"));
     }
@@ -205,7 +205,7 @@ void Game::handleEvents()
 void Game::update(float deltaTime)
 {
     // Update players
-    for(auto& player : players) { player.Update(); }
+    for(auto& player : players) { player.Update(deltaTime); }
 
     // Update grenades and handle logic
     UpdateGrenades(deltaTime);
@@ -217,11 +217,15 @@ void Game::update(float deltaTime)
     updateCamera();
 
     UpdateScore();
+
+    // Update reset timer
+    UpdateResetTimer(deltaTime);
+   
 }
 
 void Game::UpdateGrenades(float deltaTime)
 {
-    // Update grenades
+    // Update grenades (position, timer etc.)
     for (int i = grenades.size() - 1; i >= 0; --i)
     {
         grenades.at(i).Update(deltaTime);
@@ -232,7 +236,8 @@ void Game::UpdateGrenades(float deltaTime)
         }
     }
 
-    // Grenade logic
+    //--------------- Grenade logic ----------------
+
     for (auto& grenade : grenades) 
     {   
         // Check if player is within radius of explosion
@@ -251,7 +256,7 @@ void Game::UpdateGrenades(float deltaTime)
             for (Player& player : players)
             {
                 // Only do splash damage if no tiles are in between
-                FloatPoint playerMidPos = {player.getPosX() + player.getHitbox().GetWidth() / 2, player.getPosY() + player.getHitbox().GetHeight() / 2};
+                FloatPoint playerMidPos = {player.getPosX() + player.getWidth() / 2, player.getPosY() + player.getHeight() / 2};
                 FloatPoint grenadePos = {grenade.getPosX(), grenade.getPosY()};
                 if (!isTileBetweenPoints(playerMidPos, grenadePos)) 
                 {
@@ -265,9 +270,8 @@ void Game::UpdateGrenades(float deltaTime)
                         player.InflictDamage(damage);
                     }
                 }
-                
-
             }
+            // Update flag. Grenade can only do damage once
             grenade.inflictedDamage = true;
         }
     }
@@ -284,7 +288,7 @@ void Game::draw()
     for (int i = 0; i < players.size(); ++i) { players[i].Draw(playerTextures[i]); }
 
     // Draw health bars
-    for (auto& player : players) { player.DrawHealthBar(player.getPosX(), player.getPosY() - 20, player.getWidth(), RED); }
+    for (auto& player : players) { player.DrawStatus(); }
 
     // Draw grenades
     for (auto& grenade : grenades) { grenade.Draw(grenadeTexture); }
@@ -356,5 +360,26 @@ void Game::UpdateScore()
     else // Unique, draw crown on this player
     {
         currentLeaderIndex = highestScorePlayerIndex;
+    }
+}
+
+void Game::UpdateResetTimer(float deltaTime)
+{
+    if (numPlayers == 1) { return; } // No need for reset timer if only one player
+    
+    int playersAlive = 0;
+    for (Player& player : players) 
+    { 
+        if (!player.IsDead()) 
+        { 
+            ++playersAlive; 
+        } 
+    }
+
+    if (resetTimer > 0.0f && playersAlive <= 1) { resetTimer -= deltaTime; }
+    if (resetTimer <= 0.0f) 
+    { 
+        Reset();
+        resetTimer = resetDelay; 
     }
 }

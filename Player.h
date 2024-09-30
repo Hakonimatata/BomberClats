@@ -8,7 +8,7 @@
 
 using namespace std;
 
-// Helping enum for player facing
+// Helping enums
 enum class PlayerFacing 
 {
     left,
@@ -25,10 +25,11 @@ class Player
         void init(PlayerControls controls);
 
         void HandleInput(PlayerCommand& playerCommand);
-        void Update();
+        void Update(float deltaTime);
         void Draw(Texture2D& texture);
         void DrawCrown(Texture2D& texture);
         void DrawScore(int score);
+        void DrawStatus();
 
         Hitbox getHitbox() { return hitbox; }
         float getPosX() { return posX; }
@@ -46,7 +47,6 @@ class Player
 
         void HandleCollisions(Hitbox& otherHitbox);
 
-        void DrawHealthBar(float posX, float posY, float size, Color color);
         void InflictDamage(float damage) { health -= damage; }
         float GetHealth() { return health; }
         void SetHelth(float health) { this->health = health; }
@@ -76,12 +76,21 @@ class Player
         bool onGround = false;
         float health = 100.0f;
         bool isDead = false;
+
+        // Grenade capacity and cooldown for player
+        const float grenadeThrowDelay = 1.0f; // 1 second
+        float grenadeThrowTimer = 0.0f; // 0 is ready to throw
+        
+        float grenadeCharge = 0.0f;
+        float maxGrenadeCharge = 6.0f;
         
         // Animation
         int currentFrame = 0;
         int framesCounter = 0;
         const int frameUpdateRate = 5;
         Rectangle getSourceRect(Texture2D& texture);
+
+        
 
         Hitbox hitbox;
         PlayerControls controls;

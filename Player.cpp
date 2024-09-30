@@ -1,8 +1,10 @@
 #include "Player.h"
 
 Player::Player(float posX, float posY, int playerID) : 
-    posX(posX), posY(posY), startPosX(posX), startPosY(posY), hitbox{posX, posY, 40, 40}, playerID(playerID)
-{}
+    posX(posX), posY(posY), startPosX(posX), startPosY(posY), hitbox{posX, posY, 0, 0}, playerID(playerID)
+{
+    hitbox = Hitbox(posX, posY, width, height);
+}
 
 Player::~Player()
 {
@@ -41,15 +43,27 @@ void Player::HandleInput(PlayerCommand& playerCommand)
         jump();
     }
 
+    /*
     if(IsKeyPressed(controls.useWeapon))
     {
         // Todo: check which weapon is equiped
         throwGrenade(playerCommand);
     }
+    */
+
+   //  Use is key down for grenade, so throw velocity can be charged up
+   if (IsKeyDown(controls.useWeapon) && grenadeThrowTimer <= 0.0f)
+   {
+       if (grenadeCharge < maxGrenadeCharge) { grenadeCharge += 0.1f; }
+   }
+   else if (grenadeCharge > 0.0f) { throwGrenade(playerCommand); }
 }
 
 void Player::throwGrenade(PlayerCommand& playerCommand)
 {
+    if (grenadeThrowTimer > 0.0f) return;
+    else { grenadeThrowTimer = grenadeThrowDelay; }
+
     // Command game class to deploy a grenade
     playerCommand.useWeapon = UseWeapon::Grenade;
     playerCommand.posX = this->posX;
@@ -58,7 +72,7 @@ void Player::throwGrenade(PlayerCommand& playerCommand)
     playerCommand.velY = this->velY;
 
 
-    float grenadeSpeed = 3.0f;
+    float grenadeSpeed = 2.0f + grenadeCharge;
     if (playerFacing == PlayerFacing::left)
     {
         playerCommand.velX -= grenadeSpeed;
@@ -67,6 +81,8 @@ void Player::throwGrenade(PlayerCommand& playerCommand)
     {
         playerCommand.velX += grenadeSpeed;
     }
+    playerCommand.velY -= 5 - grenadeCharge / 3;
+    grenadeCharge = 0.0f;
 
 }
 
@@ -139,9 +155,12 @@ void Player::fall()
     }
 }
 
-void Player::Update() 
+void Player::Update(float deltaTime) 
 { 
     fall();
+
+    // Update grenade throw timer
+    if (grenadeThrowTimer > 0.0f) { grenadeThrowTimer -= deltaTime; }
 
     // Update hitbox position
     hitbox = Hitbox(posX, posY, width, height);
@@ -219,10 +238,24 @@ Rectangle Player::getSourceRect(Texture2D& texture)
     return sourceRec;
 }
 
-void Player::DrawHealthBar(float posX, float posY, float size, Color color)
+void Player::DrawStatus()
 {
+    // Draw helth status
     float barWhickness = 5.0f;
-    DrawRectangle(posX, posY, size * health / 100, barWhickness, color);
+    DrawRectangle(posX, posY - 20, width * health / 100, barWhickness, RED);
+    DrawRectangleLines(posX, posY - 20, width, barWhickness, BLACK);
+
+    // Draw grenade timeout status
+    if(grenadeThrowTimer > 0.0f) 
+    {
+       DrawRectangle(posX, posY - 20 + barWhickness, width * grenadeThrowTimer / grenadeThrowDelay, barWhickness, WHITE);
+    }
+
+    // Draw grenade charge
+    if(grenadeCharge > 0.0f) 
+    {
+       DrawRectangle(posX, posY - 20 + barWhickness, width * grenadeCharge / maxGrenadeCharge, barWhickness, YELLOW);
+    }
 }
 
 void Player::die()

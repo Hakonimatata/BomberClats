@@ -42,6 +42,7 @@ class Game : public GridMap
         void Reset();
         void UpdateGrenades(float deltaTime);
         void UpdateScore();
+        void UpdateResetTimer(float deltaTime);
 
         // Players
         int numPlayers;
@@ -57,6 +58,9 @@ class Game : public GridMap
         vector<Grenade> grenades;
         Texture2D grenadeTexture;         // grenadeTexture
 
+        // Reset timer
+        const float resetDelay = 3.0f;
+        float resetTimer = 0.0f;
 
         Texture2D crownTexture;
 };
