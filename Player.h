@@ -5,6 +5,7 @@
 #include "Utilities.h"
 #include <iostream>
 #include <vector>
+#include "AnimationHandler.h"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ enum class PlayerFacing
     right
 };
 
-class Player 
+class Player : public AnimationHandler
 {
     public:
 
@@ -85,9 +86,6 @@ class Player
         float maxGrenadeCharge = 6.0f;
         
         // Animation
-        int currentFrame = 0;
-        int framesCounter = 0;
-        const int frameUpdateRate = 5;
         Rectangle getSourceRect(Texture2D& texture);
 
         

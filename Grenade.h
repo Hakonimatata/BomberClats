@@ -4,10 +4,11 @@
 #include "Hitbox.h"
 #include "Utilities.h"
 #include <iostream>
+#include "AnimationHandler.h"
 
 using namespace std;
 
-class Grenade
+class Grenade : public AnimationHandler
 {
 
     public:
@@ -36,20 +37,19 @@ class Grenade
 
     private:
 
-        float damage = 30.0f;
-        int throwerID; 
-
+        float damage = 35.0f;
         float size = 12.0f;
-        float velX, velY, posX, posY;
         float g = 0.3f;
+        int throwerID; 
+        float velX, velY, posX, posY;
         Hitbox hitbox;
 
+        // Timers etc.
         float explodeTimer = 2.0f;
         float accumulatedTime = 0.0f;
+        int numFramesForExplotion = 12;
 
         // Animation
-        int currentFrame = 0;
-        int framesCounter = 0;
         Rectangle getSourceRect(Texture2D& texture);
 
 };

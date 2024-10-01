@@ -47,6 +47,12 @@ void Grenade::Update(float deltaTime)
     {
         explode();
     }
+
+    if(exploded)
+    {
+        numFramesForExplotion--;
+        if(numFramesForExplotion <= 0) { isDead = true; }
+    }
 }
 
 void Grenade::explode()
@@ -58,32 +64,16 @@ void Grenade::explode()
 
 Rectangle Grenade::getSourceRect(Texture2D& texture)
 {   
-    if(exploded) { framesCounter++; }
-
-    int frameUpdateRate = 3;           // Hvor raskt animasjonen oppdateres
-    int animationEndFrame = 4;         // Siste rammenummer for animasjonen (ikke inkludert)
-    int numFrames = 5;                 // Totalt antall rammer i sprite-arket
-
-    // Oppdater animasjonsrammen
-    if (framesCounter >= frameUpdateRate) 
+    int frameUpdateRate = 3;
+    bool isMirrored = false;
+    if (exploded)
     {
-        framesCounter = 0; 
-        currentFrame++;
-
-        if (currentFrame >= animationEndFrame)
-        {
-            isDead = true;
-        }
+        return getAnimatedSourceRect(1, 4, texture, isMirrored, frameUpdateRate);
     }
-
-    // Beregn bredden og startpunktet for den nåværende animasjonsrammen
-    float frameWidth = (float)texture.width / numFrames;
-    float currentFrameStartX = currentFrame * frameWidth;
-
-    // Returner rektangelet for den nåværende animasjonsrammen
-    Rectangle sourceRec = { currentFrameStartX, 0.0f, frameWidth, (float)texture.height };
-    
-    return sourceRec;
+    else
+    {
+        return getAnimatedSourceRect(0, 0, texture, isMirrored);
+    }
 }
 
 

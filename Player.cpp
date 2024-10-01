@@ -43,14 +43,6 @@ void Player::HandleInput(PlayerCommand& playerCommand)
         jump();
     }
 
-    /*
-    if(IsKeyPressed(controls.useWeapon))
-    {
-        // Todo: check which weapon is equiped
-        throwGrenade(playerCommand);
-    }
-    */
-
    //  Use is key down for grenade, so throw velocity can be charged up
    if (IsKeyDown(controls.useWeapon) && grenadeThrowTimer <= 0.0f)
    {
@@ -81,9 +73,8 @@ void Player::throwGrenade(PlayerCommand& playerCommand)
     {
         playerCommand.velX += grenadeSpeed;
     }
-    playerCommand.velY -= 5 - grenadeCharge / 3;
+    playerCommand.velY -= 5 - grenadeCharge / 2;
     grenadeCharge = 0.0f;
-
 }
 
 void Player::HandleCollisions(Hitbox &otherHitbox)
@@ -195,47 +186,25 @@ void Player::DrawScore(int score)
 
 Rectangle Player::getSourceRect(Texture2D& texture)
 {
-    // Get current frame
-    framesCounter++;
+    bool isMirrored = false;
+    if(playerFacing == PlayerFacing::left){ isMirrored = true; }
 
-    // Update walking animation. Frame 2, 3 and 4
-    if (framesCounter >= frameUpdateRate) {
-        framesCounter = 0; 
-
-        // Update only when player is moving and on ground
-        if ((velX > 0 || velX < 0) && onGround) {
-            if (currentFrame == 3) {
-                currentFrame = 1;
-            } else {
-                currentFrame++;
-            }
-        } else {
-            // Sett til stillestående ramme
-            currentFrame = 0;
-        }
-    }
-
-    int numFrames = texture.width / texture.height;
-    float currentFrameStartX = currentFrame * (float)texture.width / numFrames;
-    float frameWidth = (float)texture.width / numFrames;
-
-    if(isDead) 
+    if ((velX > 0 || velX < 0) && onGround)  // Running
     {
-        int dethFrame = 4;
-        return { (float)dethFrame * (float)texture.width / numFrames, 0.0f, frameWidth, (float)texture.height };
-    }
-    if(!onGround && velX != 0) // Jumping
+        return getAnimatedSourceRect(1, 3, texture, isMirrored);
+    } 
+    else if (isDead) // Dead
     {
-        //  Return 6th frame (index 5)
-        int jumpFrame = 5;
-        Rectangle sourceRec = { (float)jumpFrame * (float)texture.width / numFrames, 0.0f, frameWidth, (float)texture.height };
-        if (playerFacing == PlayerFacing::left) { sourceRec.width *= -1; }
-        return sourceRec;
+        return getAnimatedSourceRect(4, 4, texture, isMirrored);
     }
-
-    Rectangle sourceRec = { currentFrameStartX, 0.0f, frameWidth, (float)texture.height };
-    if (playerFacing == PlayerFacing::left) { sourceRec.width *= -1; }
-    return sourceRec;
+    else if (!onGround && velX != 0) // Jumping
+    {
+        return getAnimatedSourceRect(5, 5, texture, isMirrored);
+    }
+    else // Idle
+    {
+        return getAnimatedSourceRect(0, 0, texture, isMirrored);
+    }
 }
 
 void Player::DrawStatus()

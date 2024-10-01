@@ -261,7 +261,7 @@ void Game::UpdateGrenades(float deltaTime)
                 if (!isTileBetweenPoints(playerMidPos, grenadePos)) 
                 {
                     // get distance between player and grenade
-                    float dist = sqrt(pow(player.getPosX() - grenade.getPosX(), 2) + pow(player.getPosY() - grenade.getPosY(), 2));
+                    float dist = sqrt(pow(player.getPosX() + player.getWidth() / 2 - grenade.getPosX(), 2) + pow(player.getPosY() + player.getHeight() / 2 - grenade.getPosY(), 2));
                     
                     float splashDistance = 200.0f;
                     if (dist < splashDistance) 

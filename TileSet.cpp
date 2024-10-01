@@ -14,7 +14,11 @@ TileSet::~TileSet()
 
 void TileSet::init()
 {
+    // tile 1
     Texture2D texture = LoadTexture("assets/tile1.png");
-    // load tiles into textures map
     textures.push_back(texture);
+
+     // tile 2
+    Texture2D texture2 = LoadTexture("assets/tile2.png");
+    textures.push_back(texture2);
 }

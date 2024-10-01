@@ -59,7 +59,7 @@ class Game : public GridMap
         Texture2D grenadeTexture;         // grenadeTexture
 
         // Reset timer
-        const float resetDelay = 3.0f;
+        const float resetDelay = 5.0f;    // Wait 5 seconds before reset
         float resetTimer = 0.0f;
 
         Texture2D crownTexture;
