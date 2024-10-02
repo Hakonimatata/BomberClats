@@ -15,6 +15,10 @@ enum class PlayerFacing
     left,
     right
 };
+enum class SelectedWeapon
+{
+    Grenade,
+};
 
 class Player : public AnimationHandler
 {
@@ -74,6 +78,7 @@ class Player : public AnimationHandler
         const int numJumps = 2;
         int jumpsLeft;
         PlayerFacing playerFacing = PlayerFacing::right;
+        SelectedWeapon selectedWeapon = SelectedWeapon::Grenade;
         bool onGround = false;
         float health = 100.0f;
         bool isDead = false;

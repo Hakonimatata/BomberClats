@@ -19,11 +19,9 @@ class Game : public GridMap
         Game(int winW, int winH, int numPlayers);
         ~Game();
 
-        void init();
-        
-        void handleEvents();
-        void update(float deltaTime);
-        void draw();
+        void HandleInput();
+        void Update(float deltaTime);
+        void Draw();
         void clean();
 
         bool Running(){ return isRunning; }
@@ -36,9 +34,8 @@ class Game : public GridMap
         
         // Functions
         void initPlayers();
-        void resize(int newWidth, int newHeight);
         void HandleCollitions();
-        void updateCamera();
+        void UpdateCamera();
         void Reset();
         void UpdateGrenades(float deltaTime);
         void UpdateScore();
@@ -63,4 +60,6 @@ class Game : public GridMap
         float resetTimer = 0.0f;
 
         Texture2D crownTexture;
+
+        Camera2D camera;
 };

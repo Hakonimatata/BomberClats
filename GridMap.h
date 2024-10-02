@@ -34,5 +34,6 @@ class GridMap
         float tileSize = 32;
         vector<vector<Tile>> map;
         TileSet* tileSet;
+        vector<FloatPoint> spawnPoints;
     private:
 };

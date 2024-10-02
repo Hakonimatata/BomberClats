@@ -50,7 +50,7 @@ void LevelEditor::init(int width, int height, Context context)
 
 
 
-void LevelEditor::handleInput()
+void LevelEditor::HandleInput()
 {
 
     if (IsMouseButtonDown(MOUSE_RIGHT_BUTTON))
@@ -98,7 +98,7 @@ void LevelEditor::MooveCamera()
     }
 }
 
-void LevelEditor::update()
+void LevelEditor::Update()
 {
     // update mouse position
     mouseX = GetMouseX();
@@ -106,7 +106,7 @@ void LevelEditor::update()
 }
 
 
-void LevelEditor::draw()
+void LevelEditor::Draw()
 {
     // Add to renderer here
     DrawGrid();

@@ -10,8 +10,8 @@ using namespace std;
 
 int main () {
 
-    const int screenWidth = 800;
-    const int screenHeight = 600;
+    const int screenWidth = 1400;
+    const int screenHeight = 900;
 
     InitWindow(screenWidth, screenHeight, "2D Shooter");
     SetTargetFPS(60);
@@ -46,9 +46,9 @@ int main () {
                     BeginDrawing();
                     ClearBackground(BLACK);
                     
-                        levelEditor.handleInput();
-                        levelEditor.update();
-                        levelEditor.draw();
+                        levelEditor.HandleInput();
+                        levelEditor.Update();
+                        levelEditor.Draw();
                     
                     EndDrawing();
                 }
@@ -66,16 +66,16 @@ int main () {
                 
                 // SetWindowSize(screenWidth * 2, screenHeight);
                 Game game = Game(screenWidth, screenHeight, context.numPlayers);
-                game.init();
 
+                // Game loop
                 while (game.Running() && !WindowShouldClose())
                 {
                     BeginDrawing();
                     ClearBackground(WHITE);
                     
-                        game.handleEvents();
-                        game.update(GetFrameTime());
-                        game.draw();
+                        game.HandleInput();
+                        game.Update(GetFrameTime());
+                        game.Draw();
 
                     EndDrawing();
                 }

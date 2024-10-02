@@ -90,34 +90,34 @@ void Grenade::HandleCollisions(Hitbox& otherHitbox)
     float friction = 0.7f;
 
     // Floor collition
-    if(Hitbox::isPointWithin(bottomPoint, otherHitbox))
+    // Handle floor collision
+    if(Hitbox::isPointWithin(bottomPoint, otherHitbox) && !Hitbox::isPointWithin(topPoint, otherHitbox))
     {
-        // Handle floor collision
         velY *= -1 * friction;
         velX *= friction;
-        posY--;
+        posY = otherHitbox.GetY() - size;
     }
 
-    else if (Hitbox::isPointWithin(topPoint, otherHitbox)) 
+    // Handle ceiling collision
+    else if (Hitbox::isPointWithin(topPoint, otherHitbox) && !Hitbox::isPointWithin(bottomPoint, otherHitbox)) 
     {
-        // Handle ceiling collision
         velY *= -1 * friction;
         velX *= friction;
-        posY++;
+        posY = otherHitbox.GetY() + otherHitbox.GetHeight();
     } 
 
-    else if (Hitbox::isPointWithin(rightPoint, otherHitbox))
+    // Handle right wall collision
+    else if (Hitbox::isPointWithin(rightPoint, otherHitbox) && velX > 0)
     {
-        // Handle right wall collision
         velX *= -1 * friction;
-        posX--;
+        posX = otherHitbox.GetX() - size;
     }
 
-    else if (Hitbox::isPointWithin(leftPoint, otherHitbox))
+    // Handle left wall collision
+    else if (Hitbox::isPointWithin(leftPoint, otherHitbox) && velX < 0)
     {
-        // Handle left wall collision
         velX *= -1 * friction;
-        posX++;
+        posX = otherHitbox.GetX() + otherHitbox.GetWidth();
     }
 
 }

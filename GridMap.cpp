@@ -78,9 +78,16 @@ int GridMap::LoadLevel(const std::string& filename) {
             int tileId;
             inFile >> tileId;
 
-            if (tileId != -1) {  // -1 representerer ingen tile
+            if (tileId != -1) {  // -1 represents empty tile
                 Tile tile = Tile(tileId);
                 map[y][x] = tile;
+
+                if (tileId == 1) // 1 represents spawn point
+                {
+                    // Set spawn point
+                    spawnPoints.push_back(FloatPoint({x * tileSize, y * tileSize}));
+                }
+
             }
         }
     }

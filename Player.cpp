@@ -43,12 +43,15 @@ void Player::HandleInput(PlayerCommand& playerCommand)
         jump();
     }
 
-   //  Use is key down for grenade, so throw velocity can be charged up
-   if (IsKeyDown(controls.useWeapon) && grenadeThrowTimer <= 0.0f)
-   {
-       if (grenadeCharge < maxGrenadeCharge) { grenadeCharge += 0.1f; }
-   }
-   else if (grenadeCharge > 0.0f) { throwGrenade(playerCommand); }
+    if (selectedWeapon == SelectedWeapon::Grenade)
+    {
+        //  Use is key down for grenade, so throw velocity can be charged up
+        if (IsKeyDown(controls.useWeapon) && grenadeThrowTimer <= 0.0f)
+        {
+            if (grenadeCharge < maxGrenadeCharge) { grenadeCharge += 0.1f; }
+        }
+        else if (grenadeCharge > 0.0f) { throwGrenade(playerCommand); }
+    }
 }
 
 void Player::throwGrenade(PlayerCommand& playerCommand)
@@ -112,7 +115,7 @@ void Player::HandleCollisions(Hitbox &otherHitbox)
     {
         // Handle left wall collision
         velX = 0.0f;
-        posX = otherHitbox.GetX() + otherHitbox.GetWidth();
+        posX = otherHitbox.GetX() + otherHitbox.GetWidth() - 1;
     }
 }
 
@@ -192,7 +195,7 @@ Rectangle Player::getSourceRect(Texture2D& texture)
     if ((velX > 0 || velX < 0) && onGround)  // Running
     {
         return getAnimatedSourceRect(1, 3, texture, isMirrored);
-    } 
+    }
     else if (isDead) // Dead
     {
         return getAnimatedSourceRect(4, 4, texture, isMirrored);

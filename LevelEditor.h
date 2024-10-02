@@ -17,10 +17,10 @@ public:
     LevelEditor();
     ~LevelEditor();
 
-    void handleInput();
+    void HandleInput();
     void init(int width, int height, Context context);
-    void update();
-    void draw();
+    void Update();
+    void Draw();
 
     bool running() { return isRunning; }
 
