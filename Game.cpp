@@ -25,8 +25,8 @@ Game::Game(int winW, int winH, int numPlayers) : GridMap(), WinW(winW), WinH(win
     grenadeTexture = LoadTexture("assets/grenade.png");
     backgroundTexture = LoadTexture("assets/background.png");
 
-    // Init camera
-    camera.target = (Vector2){0, 0};
+    // Init 2D camera
+    camera.target = (Vector2){WinW / 2.0f, WinH / 2.0f};
     camera.offset = (Vector2){WinW / 2.0f, WinH / 2.0f};
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
@@ -42,31 +42,12 @@ Game::~Game()
 
 void Game::initPlayers()
 {
-    // Initialise players and set spawn positions
-    FloatPoint player1Spawn;
-    FloatPoint player2Spawn;
-    FloatPoint player3Spawn;
-    
-    if(numPlayers > spawnPoints.size()) // Too many players for spawnpoints
-    {
-        // Set generic spawnpoints
-        float spaceBetweenPlayers = gridWidth * tileSize / (numPlayers + 1);
+    // Set generic spawnpoints for initializing players
+    float spaceBetweenPlayers = gridWidth * tileSize / (numPlayers + 1);
 
-        player1Spawn = {spaceBetweenPlayers * 1, 0};
-        player2Spawn = {spaceBetweenPlayers * 2, 0};
-        player3Spawn = {spaceBetweenPlayers * 3, 0};
-    }
-    else
-    {
-        player1Spawn = spawnPoints[0];
-        player2Spawn = spawnPoints[1];
-        player3Spawn = spawnPoints[2];
-    }
-
-    float heightShift = -100;
     if (numPlayers >= 1 ) 
     {
-        Player player = Player(player1Spawn.x, player1Spawn.y + heightShift, 1);
+        Player player = Player(spaceBetweenPlayers, 0, 1);
         player.init(PlayerControls{KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_RIGHT_CONTROL});
         players.push_back(player);
         playerTextures.push_back(LoadTexture("assets/spriteSheet1.png"));
@@ -74,7 +55,7 @@ void Game::initPlayers()
     
     if (numPlayers >= 2)
     {
-        Player player2 = Player(player2Spawn.x, player2Spawn.y + heightShift, 2);
+        Player player2 = Player(spaceBetweenPlayers * 2, 0, 2);
         player2.init(PlayerControls{KEY_A, KEY_D, KEY_W, KEY_LEFT_CONTROL});
         players.push_back(player2);
         playerTextures.push_back(LoadTexture("assets/spriteSheet2.png"));
@@ -82,11 +63,14 @@ void Game::initPlayers()
 
     if (numPlayers >= 3)
     {
-        Player player3 = Player(player3Spawn.x, player3Spawn.y + heightShift, 3);
+        Player player3 = Player(spaceBetweenPlayers * 3, 0, 3);
         player3.init(PlayerControls{KEY_G, KEY_J, KEY_Y, KEY_SPACE});
         players.push_back(player3);
         playerTextures.push_back(LoadTexture("assets/spriteSheet3.png"));
     }
+
+    // Set random spawn positions
+    SetRandomSpawnPositions();
 }
 
 void Game::HandleCollitions()
@@ -157,7 +141,7 @@ void Game::UpdateCamera()
     // Camera zoom controls
     camera.zoom += ((float)GetMouseWheelMove()*0.05f);
 
-    /*
+    
     // Handle dynamic camera zoom
     float minZoom = 0.5f;
     float maxZoom = 3.0f;
@@ -172,10 +156,10 @@ void Game::UpdateCamera()
         bool outSideScreen = screenPos.x < 0 || screenPos.x + player.getWidth() > WinW || screenPos.y < 0 || screenPos.y + player.getHeight() > WinH;
         if (outSideScreen)
         {
-            if(camera.zoom > minZoom) { camera.zoom -= 0.01f; }
+            if(camera.zoom > minZoom) { camera.zoom -= 0.002f; }
         }
     }
-    */
+    
 }
 
 void Game::HandleInput()
@@ -200,6 +184,8 @@ void Game::HandleInput()
         // Reset player commands
         playerCommand = PlayerCommand();
     }
+
+    if(IsKeyPressed(KeyboardKey::KEY_Q)) { isRunning = false; }
 }
 
 
@@ -324,8 +310,10 @@ void Game::Reset()
     {
         player.Reset();
     }
-    gridShiftX = 0;
-    gridShiftY = 0;
+
+    camera.zoom = 1.0f;
+
+    SetRandomSpawnPositions();
 }
 
 void Game::UpdateScore()
@@ -387,5 +375,20 @@ void Game::UpdateResetTimer(float deltaTime)
     { 
         Reset();
         resetTimer = resetDelay; 
+    }
+}
+
+void Game::SetRandomSpawnPositions()
+{
+    if (numPlayers > spawnPoints.size()) return; // Too many players for spawnpoints
+    // Seed random generator
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(spawnPoints.begin(), spawnPoints.end(), g);
+
+    float heightOffset = -100; // distance above spawn points
+    for (int i = 0; i < players.size(); ++i) 
+    {
+        players[i].SetSpawnPos(spawnPoints[i].x, spawnPoints[i].y + heightOffset);
     }
 }

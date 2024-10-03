@@ -12,7 +12,7 @@ Menu::Menu(int winW, int winH, Context& context) : winW(winW), winH(winH)
     float startHeight = 70;
 
     startButton = Button("assets/Buttons/startButton.png", startX, startY, startWidth, startHeight);
-    addPlayerButton = Button("assets/Buttons/addPlayerButton.png", startX - startWidth - 10, startY, startWidth / 2, startHeight);
+    addPlayerButton = Button("assets/Buttons/addPlayerButton.png", startX - startWidth - 20, startY, startWidth / 2, startHeight);
     removePlayerButton = Button("assets/Buttons/removePlayerButton.png", startX - startWidth - 10 + startWidth / 2, startY, startWidth / 2, startHeight);
     startLevelEditorButton = Button("assets/Buttons/levelEditorButton.png", startX + startWidth + 10, startY, startWidth, startHeight);
 

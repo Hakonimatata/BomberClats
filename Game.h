@@ -10,6 +10,8 @@
 #include "Grenade.h"
 #include <math.h>
 #include <algorithm>
+#include <ctime> 
+#include <random>    
 
 using namespace std;
 
@@ -40,6 +42,7 @@ class Game : public GridMap
         void UpdateGrenades(float deltaTime);
         void UpdateScore();
         void UpdateResetTimer(float deltaTime);
+        void SetRandomSpawnPositions();
 
         // Players
         int numPlayers;

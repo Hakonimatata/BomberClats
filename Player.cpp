@@ -1,7 +1,7 @@
 #include "Player.h"
 
 Player::Player(float posX, float posY, int playerID) : 
-    posX(posX), posY(posY), startPosX(posX), startPosY(posY), hitbox{posX, posY, 0, 0}, playerID(playerID)
+    posX(posX), posY(posY), spawnPosX(posX), spawnPosY(posY), hitbox{posX, posY, 0, 0}, playerID(playerID)
 {
     hitbox = Hitbox(posX, posY, width, height);
 }
@@ -123,8 +123,8 @@ void Player::Reset()
 {
     health = 100.0f;
     isDead = false;
-    posX = startPosX;
-    posY = startPosY;
+    posX = spawnPosX;
+    posY = spawnPosY;
     velX = 0.0f;
     velY = 0.0f;
 }

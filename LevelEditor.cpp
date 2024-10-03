@@ -27,7 +27,7 @@ void LevelEditor::init(int width, int height, Context context)
     initTileSet();
 
     // create empty map
-    CreateEmptyMap(context.gridWidth, context.gridHeight);
+    // CreateEmptyMap(context.gridWidth, context.gridHeight);
     
     // Load level
     if (LoadLevel("Levels/level.txt") == -1)  

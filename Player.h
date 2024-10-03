@@ -49,6 +49,7 @@ class Player : public AnimationHandler
         void setPosY(float posY) { this->posY = posY; }
         void setVelX(float velX) { this->velX = velX; }
         void setVelY(float velY) { this->velY = velY; }
+        void SetSpawnPos(float spawnPosX, float spawnPosY) { this->spawnPosX = spawnPosX; this->spawnPosY = spawnPosY; }
 
         void HandleCollisions(Hitbox& otherHitbox);
 
@@ -68,7 +69,7 @@ class Player : public AnimationHandler
 
         float width = 40;
         float height = 40;
-        const float startPosX, startPosY;
+        float spawnPosX, spawnPosY;
         float posX, posY;
         float velX, velY;
         float maxFallVel = 10.0f;
