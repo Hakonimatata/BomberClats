@@ -53,6 +53,7 @@ class Game : public GridMap
 
         // Background
         Texture2D backgroundTexture;      // Background texture
+        Texture2D groundTexture;          // Ground texture
 
         // Grenades
         vector<Grenade> grenades;

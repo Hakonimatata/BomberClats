@@ -61,17 +61,17 @@ void GridMap::CreateEmptyMap(int gridWidth, int gridHeight)
     }
 }
 
-int GridMap::LoadLevel(const std::string& filename) {
-    std::ifstream inFile(filename);
+int GridMap::LoadLevel(const string& filename) {
+    ifstream inFile(filename);
     if (!inFile) {
-        std::cerr << "Failed to open file for loading: " << filename << std::endl;
+        cerr << "Failed to open file for loading: " << filename << endl;
         return -1;
     }
 
     inFile >> gridWidth >> gridHeight;
 
     // Resize map according to grid dimensions
-    map.resize(gridHeight, std::vector<Tile>(gridWidth, Tile()));
+    map.resize(gridHeight, vector<Tile>(gridWidth, Tile()));
 
     for (int y = 0; y < gridHeight; ++y) {
         for (int x = 0; x < gridWidth; ++x) {
@@ -97,30 +97,27 @@ int GridMap::LoadLevel(const std::string& filename) {
     return 0;
 }
 
-void GridMap::SaveLevel(const std::string& filename) const {
-    std::ofstream outFile(filename);
-    if (!outFile) {
-        std::cerr << "Failed to open file for saving: " << filename << std::endl;
+void GridMap::SaveLevel(const string& filename) const {
+    ofstream ofs(filename);
+    if (!ofs) {
+        cerr << "Failed to open file for saving: " << filename << endl;
         return;
     }
 
-    outFile << gridWidth << " " << gridHeight << std::endl;
-    for (int y = 0; y < gridHeight; ++y) {
-        for (int x = 0; x < gridWidth; ++x) {
-            
-            int tileId;
+    ofs << gridWidth << " " << gridHeight << endl;
+    for (int y = 0; y < gridHeight; ++y) 
+    {
+        for (int x = 0; x < gridWidth; ++x) 
+        {
 
             Tile tile = map.at(y).at(x);
-
-           
-            tileId = tile.id;
-            
-            outFile << tileId << " ";
+            ofs << tile.id << " ";
         }
-        outFile << std::endl;
+        
+        ofs << endl;
     }
 
-    outFile.close();
+    ofs.close();
 }
 
 void GridMap::DrawGrid() const

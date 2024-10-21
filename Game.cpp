@@ -17,13 +17,14 @@ Game::Game(int winW, int winH, int numPlayers) : GridMap(), WinW(winW), WinH(win
 
     // Load level (Todo: error handling)
     LoadLevel("Levels/level.txt");
-
+       
     initPlayers();
 
     // Load textures
     crownTexture = LoadTexture("assets/crown.png");
     grenadeTexture = LoadTexture("assets/grenade.png");
     backgroundTexture = LoadTexture("assets/background.png");
+    groundTexture = LoadTexture("assets/ground.png");
 
     // Init 2D camera
     camera.target = (Vector2){WinW / 2.0f, WinH / 2.0f};
@@ -173,7 +174,7 @@ void Game::HandleInput()
     {
         player.HandleInput(playerCommand);
 
-        // Check players command
+        // Handle player command
         if (playerCommand.useWeapon == UseWeapon::Grenade)
         {
             int throwerID = player.GetPlayerID();
@@ -291,6 +292,9 @@ void Game::Draw()
         for (int i = 0; i < players.size(); ++i) { players[i].DrawScore(playerScores[i]); }
 
         DrawMap();
+
+        // Draw ground
+        DrawTexturePro(groundTexture, { 0, 0, (float)groundTexture.width, (float)groundTexture.height }, {-50, tileSize * gridHeight - 70, tileSize * gridWidth + 100, (float) WinH / 2.0f }, { 0, 0 }, 0.0f, WHITE);
 
     EndMode2D();
 }

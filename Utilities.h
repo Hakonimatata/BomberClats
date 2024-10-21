@@ -22,9 +22,9 @@ struct Point{
 };
 
 struct PlayerControls {
-    int moveLeft;   // Tastkode for å bevege til venstre
-    int moveRight;  // Tastkode for å bevege til høyre
-    int jump;       // Tastkode for å hoppe
+    int moveLeft; 
+    int moveRight;  
+    int jump;       
     int useWeapon;
 };
 
