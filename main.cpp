@@ -14,6 +14,7 @@ int main () {
     const int screenHeight = 900;
 
     InitWindow(screenWidth, screenHeight, "2D Shooter");
+    Sounds::initSounds(); // loads sounds
     SetTargetFPS(60);
 
     // global context (communication between menu and game)
@@ -58,9 +59,9 @@ int main () {
             case MenuSelection::StartGame:
             {
                 // Fiks fullscreen toggle
-                ToggleBorderlessWindowed();
-                Game game = Game(GetMonitorWidth(0), GetMonitorHeight(0), context.numPlayers);
-                ToggleFullscreen();
+                // ToggleBorderlessWindowed();
+                Game game = Game(screenWidth, screenHeight, context.numPlayers);
+                // ToggleFullscreen();
 
                 // Game loop
                 while (game.Running() && !WindowShouldClose())
@@ -75,8 +76,8 @@ int main () {
                     EndDrawing();
                 }
 
-                ToggleFullscreen();
-                ToggleBorderlessWindowed();
+                // ToggleFullscreen();
+                // ToggleBorderlessWindowed();
 
             }   
             break;

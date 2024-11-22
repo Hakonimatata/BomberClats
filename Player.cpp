@@ -133,6 +133,9 @@ void Player::jump()
 {
     if (jumpsLeft > 0) 
     {
+        // Play jump sound
+        PlaySound(Sounds::sounds["jump"]);
+
         posY -= 1;
         velY = -6.5f;
         jumpsLeft --;

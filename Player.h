@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include "AnimationHandler.h"
+#include "Sounds.h"
 
 using namespace std;
 

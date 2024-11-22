@@ -11,7 +11,8 @@
 #include <math.h>
 #include <algorithm>
 #include <ctime> 
-#include <random>    
+#include <random>
+#include "Sounds.h"
 
 using namespace std;
 
@@ -64,6 +65,6 @@ class Game : public GridMap
         float resetTimer = 0.0f;
 
         Texture2D crownTexture;
-
+        
         Camera2D camera;
 };

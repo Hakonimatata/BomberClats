@@ -20,6 +20,10 @@ Game::Game(int winW, int winH, int numPlayers) : GridMap(), WinW(winW), WinH(win
        
     initPlayers();
 
+
+
+    
+
     // Load textures
     crownTexture = LoadTexture("assets/crown.png");
     grenadeTexture = LoadTexture("assets/grenade.png");
@@ -305,7 +309,6 @@ void Game::clean()
     for (auto& texture : playerTextures) { UnloadTexture(texture); }
     UnloadTexture(grenadeTexture);
     UnloadTexture(backgroundTexture);
-
 }
 
 void Game::Reset()
